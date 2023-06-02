@@ -1,14 +1,57 @@
-const lista = document.querySelector("#app ul")
-const input = document.querySelector("#app input")
-const button = document.querySelector("#app button")
+const listElement = document.querySelector("#app ul")
+const inputElement = document.querySelector("#app input")
+const buttonElement = document.querySelector("#app button")
 
-const tarefas = ["estudar para Prova", "dormir cedo"]
+const tarefas = JSON.parse(localStorage.getItem("list")) || []
 
-for (const iterator of tarefas) {
-    const tarefaElement = document.createElement("li")
-    const tarefaText = document.createTextNode(iterator)
+function renderTarefas() {
+    listElement.innerHTML = ""
+    for (const iterator of tarefas) {
+        const tarefaElement = document.createElement("li")
+        const tarefaText = document.createTextNode(iterator)
 
-tarefaElement.appendChild(tarefaText)
-lista.appendChild(tarefaElement)
+        const linkElement = document.createElement("a")
+linkElement.setAttribute("href","#")
+
+const pos = tarefas.indexOf(iterator)
+linkElement.setAttribute("onclick",`deleteTarefa(${pos})`)
+
+const linkText = document.createTextNode("excluir")
+linkElement.appendChild(linkText)
+
+
+
+        tarefaElement.appendChild(tarefaText)
+        tarefaElement.appendChild(linkElement)
+        listElement.appendChild(tarefaElement)
+    }
+    
 }
+renderTarefas();
+
+function addTarefas() {
+    const tarefaText = inputElement.value
+    tarefas.push(tarefaText)
+    inputElement.value = ""
+    renderTarefas()
+    saveToStorage()
+}
+buttonElement.onclick = addTarefas
+
+function deleteTarefa(pos) {
+ tarefas.splice(pos,1)
+    renderTarefas()
+    saveToStorage()
+}
+
+function saveToStorage(){
+localStorage.setItem("list",JSON.stringify(tarefas))
+}
+
+
+
+
+
+
+
 
